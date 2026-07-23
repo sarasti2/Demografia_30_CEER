@@ -7,7 +7,7 @@ Estimación de la Tasa Global de Fecundidad (TGF), las Tasas Específicas de Fec
 ```
 .
 ├── R/                 # Scripts del proyecto (ver R/README.md)
-├── data/              # Microdatos crudos (no versionados, ver data/README.md)
+├── data/              # Microdatos crudos 
 ├── output/
 │   ├── tablas/        # Resultados en Excel (TGF, ASFR, FCC)
 │   └── graficas/      # Figuras (resumen, por departamento, TGF vs FCC)
