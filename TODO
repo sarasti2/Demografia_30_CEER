@@ -1,0 +1,34 @@
+# Agenda de pendientes — Proyecto Demografía Colombia
+
+
+## 1. Validación del código y los resultados
+
+- Revisar y replicar cada script (`ASFR_TFR_Nacional.R`, `ASFR_TFR_by_Dpto1.R`, `ASFR_TFR_Nacional_2018.R`, `ASFR_TFR_by_Dpto_2018_Census.R`, `CHBORN.R`, `CHBORN_2018.R`) corriéndolos de extremo a extremo con los datos ya descargados, para confirmar que el código, los resultados y los datos coinciden (pasar de "código de muestra" a script versionado en `R/`).
+- Identificar errores o puntos de mejora en la lógica actual (matching de MOMLOC, ajuste por hijos no vinculados, manejo de NA).
+- Prestar atención especial a los códigos de 2018 (`ASFR_TFR_by_Dpto_2018_Census.R`, `CHBORN_2018.R`): la construcción del `momloc` y del `GEOLEV1` a partir del censo DANE es nueva y no ha sido tan probada como el pipeline de IPUMS.
+- Revisar el repositorio de Andrés como referencia/cruce de metodología.
+
+## 2. Retrospección de 1973 y tablas de vida
+
+- Generar las tablas de vida (life tables) de supervivencia para hijos y mujeres que faltan, por año censal y departamento (ver lista de archivos `ProbSurv_*` pendientes).
+- Evaluar si conviene calcular intervalos de confianza para las tasas estimadas, y usarlos como ejercicio de robustez/sensibilidad frente a los supuestos de mortalidad y matching.
+
+## 3. Serie de tasa de fecundidad 1958–2017
+
+- Documentar la desaceleración observada en 1997 y 2005 y revisar la literatura de mortalidad infantil que la explique (Kari revisar el paper relevante).
+- Contrastar contra la Encuesta Nacional de Demografía y Salud (ENDS) como fuente alterna de validación.
+
+## 4. Indicadores adicionales a calcular
+
+- Tasa de fecundidad específica por edad (ASFR) y su rango.
+- Contribución de cada tasa específica a la tasa global (descomposición del TFR).
+- Fecundidad promedio por grupos quinquenales de edad.
+- Porcentaje de mujeres sin hijos, para el rango de edad 15–54.
+
+## 5. Análisis departamental / geográfico
+
+- Evaluar convergencia de la fecundidad a nivel departamental a lo largo del tiempo.
+- Revisar el caso de San Andrés en detalle — no debe excluirse del análisis; entender por qué sus cifras se ven distintas.
+- Explorar la hipótesis de que los departamentos ubicados sobre la cordillera tienen menos espacio para "expandirse" (posible relación entre geografía/disponibilidad de tierra y fecundidad).
+- Cruzar densidad poblacional vs. fecundidad, usando densidad de población en cada año censal.
+
