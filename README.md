@@ -1,4 +1,4 @@
-# Demografía 30 CEER — Fertilidad histórica en Colombia
+# Demografía 30 CEER 
 
 Estimación de la Tasa Global de Fecundidad (TGF), las Tasas Específicas de Fecundidad por Edad (ASFR) y la Fecundidad Cohortal Completada (FCC) para Colombia, a nivel nacional y departamental, 1958–2018, usando microdatos censales y el método de hijos propios (Reid et al., 2020).
 
@@ -7,7 +7,6 @@ Estimación de la Tasa Global de Fecundidad (TGF), las Tasas Específicas de Fec
 ```
 .
 ├── R/                 # Scripts del proyecto (ver R/README.md)
-├── Codigos_Adriana/   # Scripts de referencia originales (no versionados)
 ├── data/              # Microdatos crudos (no versionados, ver data/README.md)
 ├── output/
 │   ├── tablas/        # Resultados en Excel (TGF, ASFR, FCC)
