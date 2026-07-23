@@ -1,0 +1,52 @@
+# =========================
+# Datos crudos (IPUMS / DANE) - nunca versionar
+# =========================
+data/*
+!data/README.md
+
+# =========================
+# Codigos_Adriana - scripts de muestra, no versionar
+# (los scripts reales se agregaran mas adelante)
+# =========================
+Codigos_Adriana/
+
+# =========================
+# R
+# =========================
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# renv - se versiona renv.lock, no la libreria local
+renv/library/
+renv/staging/
+renv/python/
+
+# =========================
+# Sistema operativo
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Salidas grandes (dejar solo tablas agregadas pequenas)
+# =========================
+output/*.dta
+output/*.csv.gz
+
+# =========================
+# LaTeX - archivos auxiliares de compilacion
+# =========================
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.toc
+*.snm
+*.nav
+*.synctex.gz
