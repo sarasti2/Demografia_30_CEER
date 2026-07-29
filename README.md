@@ -11,7 +11,6 @@ Estimación de la Tasa Global de Fecundidad (TGF), las Tasas Específicas de Fec
 ├── output/
 │   ├── tablas/        # Resultados en Excel (TGF, ASFR, FCC)
 │   └── graficas/      # Figuras (resumen, por departamento, TGF vs FCC)
-├── Documento/         # Capítulo de libro (main.tex) y presentación (slides.tex)
 └── README.md
 ```
 
