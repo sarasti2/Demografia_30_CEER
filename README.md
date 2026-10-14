@@ -1,4 +1,6 @@
 # Demografía 30 CEER 
+[!CAUTION]
+El repositorio aún esta en construcción.
 
 Estimación de la Tasa Global de Fecundidad (TGF), las Tasas Específicas de Fecundidad por Edad (ASFR) y la Fecundidad Cohortal Completada (FCC) para Colombia, a nivel nacional y departamental, 1958–2018, usando microdatos censales y el método de hijos propios (Reid et al., 2020).
 
