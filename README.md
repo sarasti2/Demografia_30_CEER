@@ -26,8 +26,6 @@ Las decisiones metodológicas de ambos módulos (definiciones, supuestos, ajuste
 │   └── graficas/                # Figuras de fecundidad por indicador
 │       └── migracion/           # Diagramas de cuerdas
 ├── Documento/                   # Presentación (slides.tex) y bibliografía
-├── Codigos_Adriana/             # Scripts de referencia de fecundidad (no versionados)
-├── Codigos_Karina/              # Script de referencia de los diagramas de cuerdas (no versionado)
 └── README.md
 ```
 
