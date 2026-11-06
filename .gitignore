@@ -5,10 +5,15 @@ data/*
 !data/README.md
 
 # =========================
-# Codigos_Adriana - scripts de muestra, no versionar
-# (los scripts reales se agregaran mas adelante)
+# scripts de muestra, no versionar
 # =========================
 Codigos_Adriana/
+Codigos_Karina/
+
+# =========================
+# Literatura
+# =========================
+Literatura/
 
 # =========================
 # R

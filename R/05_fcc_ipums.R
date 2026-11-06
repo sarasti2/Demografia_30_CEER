@@ -12,21 +12,8 @@ source("R/00_setup.R")
 # ---------------------------------------------------------------------
 # CARGAR DATOS IPUMS
 # ---------------------------------------------------------------------
-if (!exists("fulldata")) {
-  ddi      <- read_ipums_ddi(path_ipums_ddi)
-  fulldata <- read_ipums_micro(ddi) %>%
-    mutate(
-      across(c(YEAR, AGE, SEX, CHBORN), as.numeric),
-      household_id = paste0(SAMPLE, SERIAL)
-    ) %>%
-    select(-SAMPLE, -SERIAL)
-}
-
-fulldata <- fulldata %>%
-  mutate(
-    department_code = as.character(GEOLEV1),
-    department      = unname(department_labels[department_code])
-  )
+fulldata <- prepare_ipums() %>%
+  mutate(CHBORN = as.numeric(CHBORN))
 
 # ---------------------------------------------------------------------
 # 1. BASE FCC: mujeres 50-65 con CHBORN válido
@@ -36,7 +23,14 @@ women_all <- fulldata %>%
 
 fcc_base <- women_all %>%
   filter(!is.na(CHBORN), !CHBORN %in% c(98, 99)) %>%
-  mutate(cohort = YEAR - AGE)
+  mutate(
+    cohort = YEAR - AGE,
+    # "Alguna vez casada o unida": todo estado civil que no sea soltera.
+    # MARST (IPUMS): 1 soltera, 2 casada/union, 3 separada/divorciada,
+    # 4 viuda, 0/9 sin dato. Se toman 2-4; el resto queda fuera del
+    # subgrupo de casadas (pero sigue contando en el total).
+    ever_partnered = as.numeric(MARST) %in% c(2, 3, 4)
+  )
 
 cat(sprintf(
   "Mujeres 50-65: %d | excluidas por CHBORN faltante/98/99: %d (%.1f%%)\n",
@@ -54,6 +48,8 @@ compute_fcc <- function(base, group_vars) {
       women          = n(),
       total_children = sum(CHBORN),
       fcc_all        = total_children / women,
+      # mujeres alguna vez casadas o unidas (para la infecundidad de casadas)
+      women_cas      = sum(ever_partnered),
       .groups = "drop"
     )
 
@@ -61,8 +57,10 @@ compute_fcc <- function(base, group_vars) {
     filter(CHBORN >= 1) %>%
     group_by(across(all_of(group_vars))) %>%
     summarise(
-      mothers  = n(),
-      fcc_cond = sum(CHBORN) / mothers,
+      mothers     = n(),
+      fcc_cond    = sum(CHBORN) / mothers,
+      # madres alguna vez casadas o unidas
+      mothers_cas = sum(ever_partnered),
       .groups = "drop"
     )
 
@@ -73,11 +71,15 @@ FCC_DEPARTAMENTAL <- compute_fcc(fcc_base, c("department", "cohort"))
 FCC_NACIONAL      <- compute_fcc(fcc_base, "cohort")
 
 # ---------------------------------------------------------------------
-# 3. % DE MUJERES SIN HIJOS, 15-54 (por censo y edad; agenda del proyecto)
+# 3. % DE MUJERES SIN HIJOS, 15-54
 # ---------------------------------------------------------------------
-childless <- fulldata %>%
+childless_base <- fulldata %>%
   filter(SEX == 2, AGE >= 15, AGE <= 54,
          !is.na(CHBORN), !CHBORN %in% c(98, 99)) %>%
+  mutate(cohort = YEAR - AGE)
+
+# Por censo y edad
+childless <- childless_base %>%
   group_by(YEAR, AGE) %>%
   summarise(
     women          = n(),
@@ -85,15 +87,26 @@ childless <- fulldata %>%
     .groups = "drop"
   )
 
-childless_dpto <- fulldata %>%
-  filter(SEX == 2, AGE >= 15, AGE <= 54,
-         !is.na(CHBORN), !CHBORN %in% c(98, 99), !is.na(department)) %>%
+# Por cohorte: cada censo aporta un tramo, lo que arma una serie larga
+childless_cohorte <- childless_base %>%
+  group_by(YEAR, cohort) %>%
+  summarise(
+    women         = n(),
+    pct_childless = 100 * mean(CHBORN == 0),
+    .groups = "drop"
+  )
+
+childless_dpto <- childless_base %>%
+  filter(!is.na(department)) %>%
   group_by(YEAR, department) %>%
   summarise(
     women         = n(),
     pct_childless = 100 * mean(CHBORN == 0),
     .groups = "drop"
   )
+
+# Los microdatos ya no se necesitan
+rm(fulldata, women_all, fcc_base, childless_base); gc(verbose = FALSE)
 
 # ---------------------------------------------------------------------
 # 4. EXPORTAR
@@ -103,46 +116,13 @@ write.xlsx(
     "FCC_Departamental"        = FCC_DEPARTAMENTAL,
     "FCC_Nacional"             = FCC_NACIONAL,
     "SinHijos_15_54_nacional"  = childless,
+    "SinHijos_15_54_cohorte"   = childless_cohorte,
     "SinHijos_15_54_dpto"      = childless_dpto
   ),
   file = file.path(dir_tablas, "Fecundidad_Cohortal_Completada_IPUMS.xlsx"),
   overwrite = TRUE
 )
 
-# Gráficas por departamento: FCC total y condicional vs. nacional
-for (dept in unique(na.omit(FCC_DEPARTAMENTAL$department))) {
+cat("Tablas guardadas en", dir_tablas, "\n")
 
-  base_d <- FCC_DEPARTAMENTAL %>% filter(department == dept)
-
-  p_fcc <- ggplot() +
-    geom_line(data = base_d, aes(cohort, fcc_all, color = "Departamento")) +
-    geom_line(data = FCC_NACIONAL,
-              aes(cohort, fcc_all, color = "Nacional"), linetype = "dashed") +
-    scale_color_manual(name = NULL,
-                       values = c("Departamento" = "#440154",
-                                  "Nacional" = "grey50")) +
-    labs(x = "Cohorte de nacimiento", y = "FCC",
-         title = sprintf("Fecundidad cohortal completada: %s", dept)) +
-    theme_minimal()
-
-  ggsave(file.path(dir_graf_fcc_dpto,
-                   sprintf("FCC_%s_vs_National.png", dept)),
-         p_fcc, width = 8, height = 5, dpi = 300)
-
-  p_cond <- ggplot() +
-    geom_line(data = base_d, aes(cohort, fcc_cond, color = "Departamento")) +
-    geom_line(data = FCC_NACIONAL,
-              aes(cohort, fcc_cond, color = "Nacional"), linetype = "dashed") +
-    scale_color_manual(name = NULL,
-                       values = c("Departamento" = "#440154",
-                                  "Nacional" = "grey50")) +
-    labs(x = "Cohorte de nacimiento", y = "FCC condicional (madres)",
-         title = sprintf("FCC condicional: %s", dept)) +
-    theme_minimal()
-
-  ggsave(file.path(dir_graf_fcc_dpto,
-                   sprintf("FCC_cond_%s_vs_National.png", dept)),
-         p_cond, width = 8, height = 5, dpi = 300)
-}
-
-cat("Resultados guardados en", output_dir, "\n")
+clean_session()
