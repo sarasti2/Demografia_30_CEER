@@ -1,6 +1,6 @@
 # Demografía 30 CEER: fecundidad y migración interna en Colombia
 
-Código del capítulo "Cambios demográficos departamentales a lo largo de los siglos XX y XXI" (Jaramillo-Echeverri y Sarasti), para el libro de los 30 años del CEER (Banco de la República). El proyecto tiene dos módulos:
+Código del capítulo "Cambio demográfico en las regiones de Colombia" (Jaramillo-Echeverri y Sarasti), para el libro de los 30 años del CEER (Banco de la República). El proyecto tiene dos módulos:
 
 1. **Fecundidad.** Tasa Global de Fecundidad (TGF/TFR), Tasas Específicas de Fecundidad por Edad (ASFR) y Fecundidad Cohortal Completada (FCC), nacional, regional y departamental, 1958–2015, con microdatos censales (IPUMS 1973, 1985, 1993, 2005 y CNPV 2018) y el método de hijos propios (Reid et al., 2020).
 2. **Migración interna.** Flujos interdepartamentales a 5 años y a 1 año con la GEIH del DANE para 2012, 2019, 2022 y 2024. Replica a Acosta y Gu (2022, DTSERU 304) para 2012 y 2019 y extiende la serie a 2022 y 2024 con la GEIH marco 2018. Los resultados se presentan como matrices origen-destino, tasas por departamento y diagramas de cuerdas.
